@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}發表新文章 — DjangoBlog{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<style>
+  .editor-section {
+    padding: 60px 22px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .editor-card {
+    background: rgba(29, 29, 31, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  }
+  .editor-header {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  .editor-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: #f5f5f7;
+    margin-bottom: 8px;
+  }
+  .editor-subtitle {
+    color: #86868b;
+    font-size: 0.95rem;
+  }
+  .form-group {
+    margin-bottom: 24px;
+  }
+  .form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #a1a1a6;
+    margin-bottom: 8px;
+  }
+  .form-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: #f5f5f7;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .form-input:focus {
+    border-color: #2997ff;
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .btn-submit {
+    display: inline-block;
+    width: 100%;
+    background: #0071e3;
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 980px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    text-align: center;
+    margin-top: 10px;
+  }
+  .btn-submit:hover {
+    background: #0077ed;
+  }
+  .btn-submit:active {
+    transform: scale(0.98);
+  }
+  /* EasyMDE 深色模式客製樣式 */
+  .EasyMDEContainer {
+    background: #111;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .EasyMDEContainer .editor-toolbar {
+    background: #1c1c1e;
+    border-color: rgba(255, 255, 255, 0.15);
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+  .EasyMDEContainer .editor-toolbar button {
+    color: #d1d1d6 !important;
+  }
+  .EasyMDEContainer .editor-toolbar button:hover,
+  .EasyMDEContainer .editor-toolbar button.active {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: transparent !important;
+    color: #ffffff !important;
+  }
+  .EasyMDEContainer .CodeMirror {
+    background: #0d0d0d;
+    color: #f5f5f7;
+    border-color: rgba(255, 255, 255, 0.15);
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  .EasyMDEContainer .editor-preview,
+  .EasyMDEContainer .editor-preview-side {
+    background: #1c1c1e;
+    color: #f5f5f7;
+  }
+</style>
+
+<div class="editor-section">
+  <div class="editor-card">
+    <div class="editor-header">
+      <h1 class="editor-title">發表新文章</h1>
+      <p class="editor-subtitle">支援所見即所得與 Markdown 語法，記錄您的創意與技術知識</p>
+    </div>
+
+    <form method="post" action="{% url 'article:create_post' %}">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.title.id_for_label }}">文章標題 *</label>
+        {{ form.title }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.slug.id_for_label }}">網址簡稱 (Slug)</label>
+        {{ form.slug }}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.content.id_for_label }}">文章內文 (Markdown 格式) *</label>
+        {{ form.content }}
+      </div>
+
+      <button type="submit" class="btn-submit">發布文章</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var editorElem = document.getElementById("markdown-editor");
+    if (editorElem) {
+      editorElem.removeAttribute("required");
+    }
+
+    var easymde = new EasyMDE({
+      element: editorElem,
+      spellChecker: false,
+      placeholder: "使用 Markdown 撰寫您的文章，支援粗體、標題、程式碼塊、表格...",
+      status: ["lines", "words"],
+      forceSync: true,
+      renderingConfig: {
+        singleLineBreaks: false,
+        codeSyntaxHighlighting: true,
+      }
+    });
+
+    var form = document.querySelector("form");
+    if (form) {
+      form.addEventListener("submit", function(e) {
+        var contentValue = easymde.value().trim();
+        if (!contentValue) {
+          e.preventDefault();
+          alert("請輸入文章內文！");
+          easymde.codemirror.focus();
+        } else {
+          editorElem.value = contentValue;
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}

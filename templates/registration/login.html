@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}會員登入 — DjangoBlog{% endblock %}
+
+{% block content %}
+<style>
+  .login-section {
+    padding: 80px 22px;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+  .login-card {
+    background: rgba(29, 29, 31, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    text-align: center;
+  }
+  .login-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #f5f5f7;
+    margin-bottom: 8px;
+    letter-spacing: -0.03em;
+  }
+  .login-subtitle {
+    font-size: 0.9rem;
+    color: #86868b;
+    margin-bottom: 30px;
+  }
+  .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  .form-label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #a1a1a6;
+    margin-bottom: 6px;
+  }
+  .form-control {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: #f5f5f7;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-control:focus {
+    border-color: #2997ff;
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .btn-login {
+    width: 100%;
+    background: #0071e3;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 12px;
+    border: none;
+    border-radius: 980px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-login:hover {
+    background: #0077ed;
+  }
+  .btn-login:active {
+    transform: scale(0.98);
+  }
+  .alert-error {
+    background: rgba(255, 69, 58, 0.15);
+    border: 1px solid rgba(255, 69, 58, 0.4);
+    color: #ff453a;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+  }
+</style>
+
+<div class="login-section">
+  <div class="login-card">
+    <h1 class="login-title">會員登入</h1>
+    <p class="login-subtitle">請輸入您的帳號與密碼以發布文章</p>
+
+    {% if messages %}
+      {% for message in messages %}
+        {% if message.tags == 'error' %}
+          <div class="alert-error">{{ message }}</div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label" for="id_username">帳號 (Username)</label>
+        <input type="text" name="username" id="id_username" class="form-control" required placeholder="輸入您的帳號">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="id_password">密碼 (Password)</label>
+        <input type="password" name="password" id="id_password" class="form-control" required placeholder="輸入您的密碼">
+      </div>
+
+      <button type="submit" class="btn-login">登入</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
