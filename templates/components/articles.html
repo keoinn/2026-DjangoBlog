@@ -1,0 +1,37 @@
+<section class="section section-articles" id="articles" aria-label="最新文章">
+  <div class="articles-inner">
+    <h2 class="section-title">最新文章</h2>
+    <ul class="article-list">
+      {% for post in posts %}
+      <li class="article-card">
+        <div class="article-thumb">
+          <picture>
+            <source
+              srcset="https://www.apple.com/v/iphone-17-pro/g/images/overview/welcome/hero__bsveixlwbms2_small.jpg,
+                      https://www.apple.com/v/iphone-17-pro/g/images/overview/welcome/hero__bsveixlwbms2_small_2x.jpg 2x"
+              media="(max-width:734px)" />
+            <source
+              srcset="https://www.apple.com/v/iphone-17-pro/g/images/overview/welcome/hero__bsveixlwbms2_large.jpg,
+                      https://www.apple.com/v/iphone-17-pro/g/images/overview/welcome/hero__bsveixlwbms2_large_2x.jpg 2x"
+              media="(min-width:0px)" />
+            <img
+              src="https://www.apple.com/v/iphone-17-pro/g/images/overview/welcome/hero__bsveixlwbms2_large.jpg"
+              alt="{{ post.title }}" />
+          </picture>
+        </div>
+        <div class="article-body">
+          <p class="article-date">{{ post.pub_date|date:"Y 年 n 月 j 日" }}</p>
+          <h3 class="article-title">{{ post.title }}</h3>
+          <p class="article-excerpt">
+            {{ post.content }}
+          </p>
+        </div>
+      </li>
+      {% empty %}
+      <li class="article-card" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+        <p class="article-excerpt">目前尚無發布的文章。</p>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>

@@ -1,10 +1,7 @@
 {% extends "base.html" %}
 
-{% block 'content' %}
-    {% for post in posts %}
-        <h1> {{ post.title }}</h1>
-        <small> {{ post.content }} </small>
-        <hr/>
-        <h6> {{ post.slug }} | {{post.pub_date}} </h6>
-    {% endfor %}
-{% endblock 'content' %}
+{% block content %}
+  {% include "components/hero.html" %}
+  {% include "components/features.html" %}
+  {% include "components/articles.html" %}
+{% endblock content %}
