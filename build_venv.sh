@@ -1,14 +1,14 @@
-#!/usr/bin/env bash
+#!/bin/sh
 set -e
 
 echo "=========================================="
 echo "Setting up Python Virtual Environment..."
 echo "=========================================="
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Check if python3 is installed
-if ! command -v python3 &> /dev/null; then
+if ! command -v python3 >/dev/null 2>&1; then
     echo "[ERROR] python3 is not installed or not in PATH."
     exit 1
 fi
@@ -22,14 +22,14 @@ else
     echo ".venv already exists. Skipping creation."
 fi
 
-# Upgrade pip
+# Upgrade pip using python3
 echo "Upgrading pip..."
-"${SCRIPT_DIR}/.venv/bin/python" -m pip install --upgrade pip
+"${SCRIPT_DIR}/.venv/bin/python3" -m pip install --upgrade pip
 
 # Install dependencies
 if [ -f "${SCRIPT_DIR}/requirement.txt" ]; then
     echo "Installing dependencies from requirement.txt..."
-    "${SCRIPT_DIR}/.venv/bin/pip" install -r "${SCRIPT_DIR}/requirement.txt"
+    "${SCRIPT_DIR}/.venv/bin/python3" -m pip install -r "${SCRIPT_DIR}/requirement.txt"
 else
     echo "[WARNING] requirement.txt not found. Skipping installation."
 fi
